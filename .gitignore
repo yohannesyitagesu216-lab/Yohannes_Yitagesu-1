@@ -1,0 +1,25 @@
+node_modules/
+venv/
+__pycache__/
+.env
+models/*
+dataset/*
+!dataset/train/.gitkeep
+.venv/
+cloudflared.deb
+.venv/
+cloudflared.deb
+
+# Large ML data/model files
+ai-service/dataset/
+ai-service/models/*
+!ai-service/models/.gitkeep
+
+# Local database
+backend/database.sqlite
+
+# Frontend build output
+frontend/dist/
+
+# Temporary files
+*.save
