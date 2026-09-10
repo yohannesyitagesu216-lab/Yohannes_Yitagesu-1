@@ -13,6 +13,8 @@ cloudflared.deb
 # Large ML data/model files
 ai-service/dataset/
 ai-service/models/*
+!ai-service/models/agrovision_model.keras
+!ai-service/models/classes.txt
 !ai-service/models/.gitkeep
 
 # Local database
