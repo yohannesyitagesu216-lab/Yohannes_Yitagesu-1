@@ -9,7 +9,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="app-footer bg-[var(--bg-footer)] text-[var(--text-muted)] border-t border-[var(--border-color)]">
+    <footer className="app-footer border-t border-white/10 bg-[#031522] text-slate-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 py-16">
@@ -24,15 +24,15 @@ export default function Footer() {
                 <p className="text-xs text-[var(--text-secondary)]">AI</p>
               </div>
             </div>
-            <p className="text-sm text-[var(--text-secondary)] mb-4 leading-relaxed">{t('ui.smartAgriculture')}</p>
+            <p className="mb-4 max-w-xs text-sm leading-relaxed text-slate-300">Smart agriculture powered by artificial intelligence. Transform your farming with data-driven decisions.</p>
             <div className="flex gap-3">
-              <a href="https://t.me/jo572127" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:text-[var(--primary)] hover:bg-[var(--bg-primary)] transition-all">
+              <a href="https://t.me/jo572127" target="_blank" rel="noreferrer" aria-label="Chat on Telegram" className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-emerald-400 transition-all hover:-translate-y-0.5 hover:bg-emerald-400/10 hover:text-emerald-300">
                 <MessageCircle size={18} />
               </a>
-              <a href="mailto:yohannesyitagesu216@gmail.com" className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:text-[var(--primary)] hover:bg-[var(--bg-primary)] transition-all">
+              <a href="mailto:yohannesyitagesu216@gmail.com" aria-label="Email AgroVision AI" className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-emerald-400 transition-all hover:-translate-y-0.5 hover:bg-emerald-400/10 hover:text-emerald-300">
                 <Mail size={18} />
               </a>
-              <a href="tel:+251905859811" className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:text-[var(--primary)] hover:bg-[var(--bg-primary)] transition-all">
+              <a href="tel:+251905859811" aria-label="Call AgroVision AI" className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-emerald-400 transition-all hover:-translate-y-0.5 hover:bg-emerald-400/10 hover:text-emerald-300">
                 <Phone size={18} />
               </a>
             </div>
@@ -40,53 +40,53 @@ export default function Footer() {
 
           {/* Platform Links */}
           <div>
-            <h4 className="font-semibold text-[var(--text-primary)] mb-4 text-sm uppercase tracking-wide">{t('ui.platform')}</h4>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white">{t('ui.platform')}</h4>
             <ul className="space-y-3 text-sm">
-              <li><a href="/dashboard" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('nav.dashboard')}</a></li>
-              <li><a href="/crop-analysis" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('nav.cropAnalysis')}</a></li>
-              <li><a href="/academy" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('nav.academy')}</a></li>
-              <li><a href="/tools" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('nav.tools')}</a></li>
-              <li><a href="/ai-chat" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('nav.aiChat')}</a></li>
+              <li><a href="/dashboard" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('nav.dashboard')}</a></li>
+              <li><a href="/crop-analysis" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('nav.cropAnalysis')}</a></li>
+              <li><a href="/academy" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('nav.academy')}</a></li>
+              <li><a href="/tools" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('nav.tools')}</a></li>
+              <li><a href="/ai-chat" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('nav.aiChat')}</a></li>
             </ul>
           </div>
 
           {/* Resources */}
           <div>
-            <h4 className="font-semibold text-[var(--text-primary)] mb-4 text-sm uppercase tracking-wide">{t('ui.resources')}</h4>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white">{t('ui.resources')}</h4>
             <ul className="space-y-3 text-sm">
-              <li><a href="#docs" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('ui.documentation')}</a></li>
-              <li><a href="#guides" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('ui.guides')}</a></li>
-              <li><a href="#faq" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('ui.faq')}</a></li>
-              <li><a href="#blog" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('ui.blog')}</a></li>
+              <li><a href="#docs" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('ui.documentation')}</a></li>
+              <li><a href="#guides" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('ui.guides')}</a></li>
+              <li><a href="#faq" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('ui.faq')}</a></li>
+              <li><a href="#blog" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('ui.blog')}</a></li>
             </ul>
           </div>
 
           {/* Company */}
           <div>
-            <h4 className="font-semibold text-[var(--text-primary)] mb-4 text-sm uppercase tracking-wide">{t('ui.company')}</h4>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white">{t('ui.company')}</h4>
             <ul className="space-y-3 text-sm">
-              <li><a href="#about" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('ui.aboutUs')}</a></li>
-              <li><a href="#contact" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('ui.contact')}</a></li>
-              <li><a href="#privacy" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('ui.privacyPolicy')}</a></li>
-              <li><a href="#terms" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center gap-2"><span>→</span> {t('ui.termsOfService')}</a></li>
+              <li><a href="#about" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('ui.aboutUs')}</a></li>
+              <li><a href="#contact" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('ui.contact')}</a></li>
+              <li><a href="#privacy" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('ui.privacyPolicy')}</a></li>
+              <li><a href="#terms" className="flex items-center gap-2 text-slate-300 transition-all hover:translate-x-1 hover:text-emerald-300"><span>→</span> {t('ui.termsOfService')}</a></li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h4 className="font-semibold text-[var(--text-primary)] mb-4 text-sm uppercase tracking-wide">{t('ui.contact')}</h4>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white">{t('ui.contact')}</h4>
             <div className="space-y-3 text-sm">
               <div>
                 <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide mb-1">Email</p>
-                <a href="mailto:yohannesyitagesu216@gmail.com" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors break-all">yohannesyitagesu216@gmail.com</a>
+                <a href="mailto:yohannesyitagesu216@gmail.com" className="break-all text-emerald-300 transition-colors hover:text-emerald-200">yohannesyitagesu216@gmail.com</a>
               </div>
               <div>
                 <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide mb-1">Phone</p>
-                <a href="tel:+251905859811" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors">+251 90 585 9811</a>
+                <a href="tel:+251905859811" className="text-emerald-300 transition-colors hover:text-emerald-200">+251 90 585 9811</a>
               </div>
               <div>
                 <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide mb-1">Telegram</p>
-                <a href="https://t.me/jo572127" target="_blank" rel="noreferrer" className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors">@jo572127</a>
+                <a href="https://t.me/jo572127" target="_blank" rel="noreferrer" className="text-emerald-300 transition-colors hover:text-emerald-200">@jo572127</a>
               </div>
             </div>
           </div>
@@ -105,7 +105,7 @@ export default function Footer() {
           </div>
           <button
             onClick={scrollToTop}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:bg-[var(--bg-primary)] hover:text-[var(--primary)] transition-all"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-400/10 hover:text-emerald-300"
           >
             {t('ui.backToTop')}
             <ArrowUp size={16} />

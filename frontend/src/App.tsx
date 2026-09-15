@@ -87,7 +87,7 @@ function App() {
 
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
+      <div className="app-shell flex min-h-screen flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
         {isAuthenticated && <Navbar setIsAuthenticated={setIsAuthenticated} theme={theme} onToggleTheme={toggleTheme} />}
         <main className="app-main flex-1 bg-[var(--bg-primary)]">
           <Routes>
