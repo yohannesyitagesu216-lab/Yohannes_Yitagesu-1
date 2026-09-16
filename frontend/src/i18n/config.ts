@@ -8,17 +8,25 @@ import fr from './locales/fr.json'
 import ar from './locales/ar.json'
 import es from './locales/es.json'
 
+const withLandingPremium = (locale: Record<string, any>) => ({
+  ...locale,
+  landingPremium: {
+    ...en.landingPremium,
+    ...(locale.landingPremium ?? {}),
+  },
+})
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
-      en: { translation: en },
-      am: { translation: am },
-      om: { translation: om },
-      fr: { translation: fr },
-      ar: { translation: ar },
-      es: { translation: es },
+      en: { translation: withLandingPremium(en) },
+      am: { translation: withLandingPremium(am) },
+      om: { translation: withLandingPremium(om) },
+      fr: { translation: withLandingPremium(fr) },
+      ar: { translation: withLandingPremium(ar) },
+      es: { translation: withLandingPremium(es) },
     },
     fallbackLng: 'en',
     supportedLngs: ['en', 'am', 'om', 'fr', 'ar', 'es'],

@@ -24,7 +24,7 @@ export default function Footer() {
                 <p className="text-xs text-[var(--text-secondary)]">AI</p>
               </div>
             </div>
-            <p className="mb-4 max-w-xs text-sm leading-relaxed text-slate-300">Smart agriculture powered by artificial intelligence. Transform your farming with data-driven decisions.</p>
+            <p className="mb-4 max-w-xs text-sm leading-relaxed text-slate-300">{t('landingPremium.footerDescription')}</p>
             <div className="flex gap-3">
               <a href="https://t.me/jo572127" target="_blank" rel="noreferrer" aria-label="Chat on Telegram" className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-emerald-400 transition-all hover:-translate-y-0.5 hover:bg-emerald-400/10 hover:text-emerald-300">
                 <MessageCircle size={18} />
@@ -77,15 +77,15 @@ export default function Footer() {
             <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white">{t('ui.contact')}</h4>
             <div className="space-y-3 text-sm">
               <div>
-                <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide mb-1">Email</p>
+                <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide mb-1">{t('landingPremium.email')}</p>
                 <a href="mailto:yohannesyitagesu216@gmail.com" className="break-all text-emerald-300 transition-colors hover:text-emerald-200">yohannesyitagesu216@gmail.com</a>
               </div>
               <div>
-                <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide mb-1">Phone</p>
+                <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide mb-1">{t('landingPremium.phone')}</p>
                 <a href="tel:+251905859811" className="text-emerald-300 transition-colors hover:text-emerald-200">+251 90 585 9811</a>
               </div>
               <div>
-                <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide mb-1">Telegram</p>
+                <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide mb-1">{t('landingPremium.telegram')}</p>
                 <a href="https://t.me/jo572127" target="_blank" rel="noreferrer" className="text-emerald-300 transition-colors hover:text-emerald-200">@jo572127</a>
               </div>
             </div>
