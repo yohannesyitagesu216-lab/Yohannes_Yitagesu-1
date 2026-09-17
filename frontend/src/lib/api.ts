@@ -52,6 +52,11 @@ class ApiClient {
     return response.data
   }
 
+  async syncGoogleUser(payload: { name: string; email: string; avatar?: string | null }): Promise<AuthResponse> {
+    const response = await this.client.post<AuthResponse>('/auth/google-sync', payload)
+    return response.data
+  }
+
   async forgotPassword(email: string) {
     const response = await this.client.post('/auth/forgot-password', { email })
     return response

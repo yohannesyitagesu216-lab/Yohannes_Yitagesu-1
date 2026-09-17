@@ -597,6 +597,76 @@ app.post("/api/auth/login", rateLimit({ windowMs: 15 * 60 * 1000, max: 20, messa
   }
 });
 
+app.post("/api/auth/google-sync", async (req, res) => {
+  const { name, email } = req.body || {};
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  const cleanName = String(name || "").trim() || normalizedEmail.split("@")[0] || "Google User";
+
+  if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    return res.status(400).json({ success: false, message: "A valid email is required to continue with Google." });
+  }
+
+  try {
+    const { data: existing, error: lookupError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", normalizedEmail)
+      .limit(1);
+
+    if (lookupError) {
+      console.error("Google user lookup failed", { code: lookupError.code, message: lookupError.message });
+      return res.status(503).json({ success: false, message: "Google sign-in is temporarily unavailable." });
+    }
+
+    let user = existing?.[0] || null;
+
+    if (!user) {
+      const userId = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const passwordHash = await bcrypt.hash(`google-oauth-${userId}`, 10);
+      const { data: createdUser, error: insertError } = await supabase
+        .from("users")
+        .insert({
+          id: userId,
+          name: cleanName,
+          email: normalizedEmail,
+          password_hash: passwordHash,
+          role: "user",
+          created_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error("Google user insert failed", { code: insertError.code, message: insertError.message });
+        return res.status(503).json({ success: false, message: "Google sign-in could not create your account." });
+      }
+
+      user = createdUser;
+    } else if (String(user.name || "").trim() !== cleanName) {
+      const { error: updateError } = await supabase
+        .from("users")
+        .update({ name: cleanName })
+        .eq("id", user.id);
+
+      if (updateError) {
+        console.error("Google user name update failed", { code: updateError.code, message: updateError.message });
+      }
+
+      user = { ...user, name: cleanName };
+    }
+
+    const safeUser = sanitizeUser(user);
+    return res.json({
+      success: true,
+      message: "Google sign-in successful.",
+      data: { token: createToken(safeUser), user: safeUser },
+    });
+  } catch (error) {
+    console.error("Google sync failed", error);
+    return res.status(500).json({ success: false, message: "Google sign-in failed." });
+  }
+});
+
 app.get("/api/auth/me", authMiddleware, async (req, res) => {
   try {
     const { data: user, error } = await supabase.from("users").select("*").eq("id", req.user.id).single();

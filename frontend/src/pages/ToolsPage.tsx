@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { Beaker, Droplet, BarChart3, Bug, Sparkles } from 'lucide-react'
 
 export default function ToolsPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('soil')
 
   const SoilAnalyzer = () => {
@@ -165,15 +167,15 @@ export default function ToolsPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 pb-10 pt-6 sm:px-6 lg:px-8">
+    <div className="page-frame pb-10 pt-6 sm:pt-8">
       <div className="space-y-6 md:space-y-8">
-        <div className="overflow-hidden rounded-[28px] border border-[var(--border-color)] bg-[var(--bg-card)] p-6 shadow-[0_20px_50px_rgba(15,23,42,0.06)] sm:p-8 lg:p-10">
+        <div className="glass-panel overflow-hidden rounded-[24px] bg-gradient-to-br from-emerald-950/35 via-[var(--bg-card)] to-cyan-950/25 p-6 sm:p-8 lg:p-9">
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-600">
+            <div className="section-label inline-flex items-center gap-2 text-emerald-300">
               <Sparkles size={14} />
               {t('ui.farmToolkit')}
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl lg:text-5xl">
+            <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">
               {t('tools.title')}
             </h1>
             <p className="max-w-2xl text-base text-[var(--text-secondary)] sm:text-lg">
@@ -188,8 +190,9 @@ export default function ToolsPage() {
             <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('ui.chooseTool')}</p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
             {[
+              { key: 'disease', label: 'Disease Detection', icon: Sparkles, desc: 'Scan a crop image with the AgroVision computer-vision model.', active: 'from-emerald-500 to-teal-500', idle: 'from-emerald-500/10 to-teal-500/10' },
               { key: 'soil', label: t('tools.soilAnalysis'), icon: Beaker, desc: t('tools.soilAnalysisDesc'), active: 'from-amber-500 to-orange-500', idle: 'from-amber-500/10 to-orange-500/10' },
               { key: 'irrigation', label: t('ui.irrigationPlanning'), icon: Droplet, desc: t('ui.irrigationDesc'), active: 'from-sky-500 to-cyan-500', idle: 'from-sky-500/10 to-cyan-500/10' },
               { key: 'yield', label: t('ui.yieldPrediction'), icon: BarChart3, desc: t('ui.yieldDesc'), active: 'from-emerald-500 to-green-500', idle: 'from-emerald-500/10 to-green-500/10' },
@@ -206,7 +209,7 @@ export default function ToolsPage() {
                   aria-pressed={isActive}
                   className={`group rounded-2xl border p-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)] ${
                     isActive
-                      ? 'border-transparent bg-gradient-to-br shadow-[0_18px_35px_rgba(14,165,233,0.14)] ' + tool.active + ' text-white'
+                      ? 'border-transparent bg-gradient-to-br shadow-[0_18px_35px_rgba(16,185,129,0.16)] ' + tool.active + ' text-white'
                       : 'border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] shadow-[0_10px_30px_rgba(15,23,42,0.04)] hover:-translate-y-0.5 hover:border-primary-500/40 hover:shadow-[0_16px_30px_rgba(15,23,42,0.08)]'
                   }`}
                 >
@@ -227,6 +230,12 @@ export default function ToolsPage() {
 
         <section className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-[0_12px_30px_rgba(15,23,42,0.05)] sm:p-7">
           <div className="max-w-3xl">
+            {activeTab === 'disease' && (
+              <div className="space-y-5 animate-fade-in">
+                <div className="space-y-2"><h2 className="flex items-center gap-3 text-2xl font-bold text-[var(--text-primary)]"><Sparkles className="text-emerald-400" size={28} /> Disease Detection</h2><p className="text-sm leading-6 text-[var(--text-secondary)]">Use the live computer-vision workflow to identify crop disease, confidence, symptoms, and treatment guidance.</p></div>
+                <button type="button" onClick={() => navigate('/crop-analysis')} className="inline-flex items-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 text-sm font-bold text-[#052033] transition-transform hover:-translate-y-0.5"><Sparkles size={17} /> Open disease scanner</button>
+              </div>
+            )}
             {activeTab === 'soil' && (
               <div className="space-y-6 animate-fade-in">
                 <div className="space-y-2">

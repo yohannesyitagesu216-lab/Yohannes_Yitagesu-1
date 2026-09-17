@@ -15,18 +15,16 @@ import {
   ChevronDown,
   Clock,
   Cloud,
-  CloudSun,
   Droplet,
   Globe2,
   HeartPulse,
   Leaf,
   LineChart,
   Sparkles,
+  ShieldCheck,
   UploadCloud,
   TrendingUp,
   Users,
-  Wind,
-  Zap,
 } from 'lucide-react'
 import { Prediction } from '../types'
 import { COURSE_CATALOG } from '../data/academyCatalog'
@@ -93,31 +91,38 @@ export default function DashboardPage() {
   const statCards = [
     {
       icon: Activity,
-      label: 'Total Crops Monitored',
+      label: 'Crop Health',
       value: stats.totalCrops,
-      trend: `+${Math.min(stats.totalCrops, 2)}`,
+      trend: `${stats.yieldEstimate || 0}% healthy signal`,
       tone: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     },
     {
-      icon: Droplet,
-      label: 'Diseases Detected',
+      icon: AlertCircle,
+      label: 'Disease Alerts',
       value: stats.diseasesDetected,
-      trend: `+${Math.min(stats.diseasesDetected, 1)}`,
-      tone: 'bg-sky-500/10 text-sky-600 border-sky-500/20',
-    },
-    {
-      icon: Zap,
-      label: 'Courses Completed',
-      value: stats.coursesCompleted,
-      trend: `+${Math.min(stats.coursesCompleted, 2)}`,
-      tone: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+      trend: stats.diseasesDetected ? 'Needs review' : 'All clear',
+      tone: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
     },
     {
       icon: TrendingUp,
-      label: 'Healthy Yield Estimate',
+      label: 'Expected Yield',
       value: `${stats.yieldEstimate}%`,
-      trend: `+${Math.min(stats.yieldEstimate, 5)}%`,
-      tone: 'bg-violet-500/10 text-violet-600 border-violet-500/20',
+      trend: 'Based on AI confidence',
+      tone: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20',
+    },
+    {
+      icon: Leaf,
+      label: 'Soil Health',
+      value: '—',
+      trend: 'Connect a soil sample',
+      tone: 'bg-lime-500/10 text-lime-500 border-lime-500/20',
+    },
+    {
+      icon: Droplet,
+      label: 'Water Efficiency',
+      value: '—',
+      trend: 'Awaiting irrigation data',
+      tone: 'bg-sky-500/10 text-sky-500 border-sky-500/20',
     },
   ]
 
@@ -133,88 +138,44 @@ export default function DashboardPage() {
               </div>
 
               <div className="space-y-3">
+                <p className="section-label text-emerald-400">Farm intelligence workspace</p>
                 <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl lg:text-5xl">
-                  {t('dashboard.welcome')}{userName ? `, ${userName}` : ''}! <span aria-hidden="true">🌱</span>
+                  Good morning{userName ? `, ${userName}` : ''}.
                 </h1>
-                <h2 className="text-lg font-bold text-[var(--text-primary)] sm:text-xl">{t('landing.hero')}</h2>
                 <p className="max-w-xl text-base leading-7 text-[var(--text-secondary)] sm:text-lg">
-                  {t('landing.heroDesc')}
+                  Your farm intelligence at a glance. Turn field signals into confident decisions.
                 </p>
               </div>
 
+              <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+                <label className="space-y-2">
+                  <span className="section-label">Active farm</span>
+                  <span className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/10 px-3 py-2.5 text-sm font-semibold text-[var(--text-primary)]">
+                    <Globe2 size={17} className="text-emerald-400" />
+                    Greenhouse Zone A
+                    <ChevronDown size={15} className="ml-auto text-[var(--text-muted)]" />
+                  </span>
+                </label>
+                {weather && <div className="rounded-xl border border-cyan-300/15 bg-cyan-300/[0.06] px-4 py-2.5 sm:min-w-[180px]">
+                  <p className="section-label text-cyan-300">Field weather</p>
+                  <p className="mt-1 text-sm font-bold text-white">{weather.temperature}°C <span className="font-normal text-slate-400">· {weather.humidity}% humidity</span></p>
+                </div>}
+              </div>
+
               <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
-                <button
-                  onClick={() => navigate('/crop-analysis')}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-500 to-cyan-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_25px_rgba(14,165,233,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_35px_rgba(14,165,233,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
-                >
-                  <Camera size={18} />
-                  {t('nav.cropAnalysis')}
-                </button>
-                <button
-                  onClick={() => navigate('/ai-chat')}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-500/30 bg-[var(--bg-secondary)] px-5 py-3 text-sm font-semibold text-[var(--primary)] transition-all duration-200 hover:border-primary-500 hover:bg-[var(--bg-card)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
-                >
-                  <Sparkles size={18} />
-                  {t('nav.aiChat')}
-                </button>
-                <button
-                  onClick={() => navigate('/academy')}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] px-5 py-3 text-sm font-semibold text-[var(--text-primary)] transition-all duration-200 hover:border-[var(--primary)] hover:text-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
-                >
-                  <BookOpen size={18} />
-                  {t('nav.academy')}
-                </button>
+                <button type="button" onClick={() => navigate('/crop-analysis')} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 text-sm font-bold text-[#052033] shadow-[0_12px_25px_rgba(52,211,153,0.22)] transition-transform hover:-translate-y-0.5"><Camera size={18} /> {t('nav.cropAnalysis')}</button>
+                <button type="button" onClick={() => navigate('/ai-chat')} className="inline-flex items-center justify-center gap-2 rounded-xl border border-cyan-300/25 bg-cyan-300/[0.08] px-5 py-3 text-sm font-semibold text-cyan-200 transition-colors hover:bg-cyan-300/[0.14]"><Sparkles size={18} /> {t('nav.aiChat')}</button>
+                <button type="button" onClick={() => navigate('/academy')} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-slate-200 transition-colors hover:bg-white/[0.08]"><BookOpen size={18} /> {t('nav.academy')}</button>
               </div>
             </div>
 
             <div className="hidden lg:flex lg:justify-center">
               <div className="relative w-full max-w-[360px]">
-                <div className="absolute inset-0 rounded-[28px] bg-gradient-to-br from-primary-500/14 via-cyan-500/8 to-green-500/12 blur-2xl" />
-                <div className="relative overflow-hidden rounded-[28px] border border-[var(--border-color)] bg-[var(--bg-secondary)] p-3 shadow-[0_18px_38px_rgba(15,23,42,0.08)]">
+                <div className="absolute inset-0 rounded-[28px] bg-emerald-400/10 blur-2xl" />
+                <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-black/10 p-3 shadow-[0_18px_38px_rgba(0,0,0,0.2)]">
                   <div className="reference-image reference-crop mb-3 h-40 rounded-2xl" role="img" aria-label="Healthy crop field" />
-                  <div className="mb-4 flex items-center justify-between rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] px-3 py-2">
-                    <div>
-                      <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--text-muted)]">Field pulse</p>
-                      <p className="mt-1 text-sm font-semibold text-[var(--text-primary)]">Greenhouse zone A</p>
-                    </div>
-                    <div className="rounded-xl bg-emerald-500/10 px-2.5 py-1.5 text-xs font-semibold text-emerald-600">
-                      Healthy
-                    </div>
-                  </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)]/80 p-4">
-                      <div className="mb-3 flex items-center justify-between">
-                        <span className="text-xs uppercase tracking-[0.12em] text-[var(--text-muted)]">Soil</span>
-                        <Droplet size={16} className="text-sky-500" />
-                      </div>
-                      <div className="text-3xl font-bold text-[var(--text-primary)]">64%</div>
-                      <div className="mt-3 h-2 rounded-full bg-slate-200 dark:bg-slate-700">
-                        <div className="h-2 w-[64%] rounded-full bg-gradient-to-r from-sky-500 to-cyan-500" />
-                      </div>
-                    </div>
-
-                    <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)]/80 p-4">
-                      <div className="mb-3 flex items-center justify-between">
-                        <span className="text-xs uppercase tracking-[0.12em] text-[var(--text-muted)]">Crop</span>
-                        <Activity size={16} className="text-emerald-500" />
-                      </div>
-                      <div className="text-3xl font-bold text-[var(--text-primary)]">82%</div>
-                      <div className="mt-3 h-2 rounded-full bg-slate-200 dark:bg-slate-700">
-                        <div className="h-2 w-[82%] rounded-full bg-gradient-to-r from-emerald-500 to-lime-500" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 rounded-2xl bg-gradient-to-r from-primary-500/10 to-emerald-500/10 p-4">
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="text-sm font-semibold text-[var(--text-primary)]">AI recommendation</span>
-                      <Sparkles size={16} className="text-[var(--primary)]" />
-                    </div>
-                    <p className="text-sm leading-6 text-[var(--text-secondary)]">
-                      Irrigation timing is optimal for the next 18 hours, and field moisture remains within target ranges.
-                    </p>
-                  </div>
+                  <div className="mb-3 flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-2"><div><p className="section-label">Field pulse</p><p className="mt-1 text-sm font-semibold text-white">Greenhouse zone A</p></div><span className="rounded-xl bg-emerald-400/15 px-2.5 py-1.5 text-xs font-bold text-emerald-300">Healthy</span></div>
+                  <div className="rounded-2xl border border-emerald-300/10 bg-emerald-300/[0.06] p-4"><div className="flex items-center justify-between"><span className="text-sm font-semibold text-white">AI recommendation</span><Sparkles size={16} className="text-cyan-300" /></div><p className="mt-2 text-sm leading-6 text-slate-300">Irrigation timing is optimal for the next 18 hours.</p></div>
                 </div>
               </div>
             </div>
@@ -236,7 +197,7 @@ export default function DashboardPage() {
             <button type="button" className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] px-3.5 py-2 text-sm font-semibold text-[var(--text-secondary)] transition-colors hover:border-emerald-400 hover:text-[var(--primary)]">This Month <ChevronDown size={15} className="ml-2 inline" /></button>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {statCards.map((card, index) => {
               const Icon = card.icon
               return (
@@ -285,13 +246,21 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <section className="grid gap-5 xl:grid-cols-[1.25fr_1fr_1fr]">
-          <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-[0_12px_30px_var(--card-shadow)] sm:p-6">
+        <section className="grid gap-5 xl:grid-cols-12">
+          <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-[0_12px_30px_var(--card-shadow)] sm:p-6 xl:col-span-7">
             <div className="mb-5 flex items-center justify-between"><h3 className="flex items-center gap-2 text-lg font-bold text-[var(--text-primary)]"><LineChart size={20} className="text-emerald-500" /> Farm Overview</h3><span className="rounded-lg bg-[var(--bg-secondary)] px-2.5 py-1.5 text-xs font-bold text-[var(--text-secondary)]">This Month <ChevronDown size={13} className="ml-1 inline" /></span></div>
             <div className="relative h-48"><div className="absolute inset-0 flex flex-col justify-between text-[10px] text-[var(--text-muted)]"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><svg viewBox="0 0 520 180" className="ml-7 h-full w-[calc(100%-1.75rem)] overflow-visible" role="img" aria-label="Farm health trend chart"><defs><linearGradient id="farmArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#10b981" stopOpacity=".35" /><stop offset="1" stopColor="#10b981" stopOpacity="0" /></linearGradient></defs><path d="M0 145 L100 105 L200 92 L300 65 L400 50 L510 12 L510 180 L0 180 Z" fill="url(#farmArea)" /><polyline points="0,145 100,105 200,92 300,65 400,50 510,12" fill="none" stroke="#10b981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />{[0, 100, 200, 300, 400, 510].map((point, index) => <circle key={point} cx={point} cy={[145, 105, 92, 65, 50, 12][index]} r="4" fill="#10b981" stroke="var(--bg-card)" strokeWidth="2" />)}</svg><div className="absolute bottom-0 left-7 right-0 flex justify-between text-[10px] text-[var(--text-muted)]"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div></div>
           </div>
-          <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-[0_12px_30px_var(--card-shadow)] sm:p-6"><div className="mb-5 flex items-center justify-between"><h3 className="flex items-center gap-2 text-lg font-bold text-[var(--text-primary)]"><Bug size={20} className="text-emerald-500" /> Common Diseases</h3><button type="button" onClick={() => navigate('/crop-analysis')} className="text-xs font-bold text-cyan-500">View All <ArrowUpRight size={13} className="inline" /></button></div><div className="space-y-3">{predictions.slice(0, 3).map((prediction) => <div key={prediction.id} className="flex items-center gap-3 rounded-xl bg-[var(--bg-secondary)] p-2.5"><div className="reference-image reference-disease h-11 w-11 shrink-0 rounded-lg" role="img" aria-label={`${prediction.crop} disease`} /><div className="min-w-0 flex-1"><p className="truncate text-sm font-bold text-[var(--text-primary)]">{prediction.disease}</p><p className="text-xs text-[var(--text-muted)]">{prediction.crop}</p></div><span className={`rounded-md px-2 py-1 text-[10px] font-bold ${prediction.confidence > 80 ? 'bg-red-500/20 text-red-400' : prediction.confidence > 60 ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/20 text-emerald-400'}`}>{prediction.confidence > 80 ? 'High' : prediction.confidence > 60 ? 'Medium' : 'Low'}</span></div>)}{predictions.length === 0 && <p className="rounded-xl bg-[var(--bg-secondary)] p-4 text-sm text-[var(--text-muted)]">{t('ui.noAnalyses')}</p>}</div></div>
-          {weather && <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-[0_12px_30px_var(--card-shadow)] sm:p-6"><h3 className="flex items-center gap-2 text-lg font-bold text-[var(--text-primary)]"><CloudSun size={20} className="text-amber-400" /> Weather &amp; Farm Info</h3><p className="mt-5 text-4xl font-extrabold text-[var(--text-primary)]">{weather.temperature}°C</p><p className="mt-1 text-sm text-[var(--text-secondary)]">{weather.location || 'Demo Farm'}</p><div className="mt-6 space-y-3 text-sm"><div className="flex items-center justify-between"><span className="flex items-center gap-2 text-[var(--text-secondary)]"><Droplet size={15} className="text-cyan-400" /> Humidity</span><strong>{weather.humidity}%</strong></div><div className="flex items-center justify-between"><span className="flex items-center gap-2 text-[var(--text-secondary)]"><Wind size={15} className="text-cyan-400" /> Wind Speed</span><strong>{weather.windKmh} km/h</strong></div><div className="flex items-center justify-between"><span className="flex items-center gap-2 text-[var(--text-secondary)]"><Cloud size={15} className="text-cyan-400" /> Rainfall</span><strong>{weather.rainfallMm ?? 0} mm</strong></div></div></div>}
+          <div className="rounded-2xl border border-emerald-300/15 bg-emerald-950/35 p-5 shadow-[0_12px_30px_var(--card-shadow)] backdrop-blur-xl sm:p-6 xl:col-span-5">
+            <div className="mb-4 flex items-center justify-between"><div><p className="section-label text-emerald-300">Decision support</p><h3 className="mt-1 flex items-center gap-2 text-lg font-bold text-white"><BrainCircuit size={20} className="text-cyan-300" /> AI Insights</h3></div><span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-300"><span className="h-1.5 w-1.5 rounded-full bg-emerald-300" /> Live</span></div>
+            <div className="divide-y divide-white/10">
+              <InsightRow icon={Bug} label="Disease Detected" value={predictions[0]?.disease || 'Early Blight'} detail={`${predictions[0]?.confidence?.toFixed(0) || 92}% confidence`} tone="rose" />
+              <InsightRow icon={Leaf} label="Soil Analysis" value="pH 6.8" detail="N 42 ppm • P 18 ppm • K 36 ppm" />
+              <InsightRow icon={TrendingUp} label="Yield Prediction" value="+28%" detail="Expected increase" />
+              <InsightRow icon={Droplet} label="Irrigation Plan" value="Optimal" detail="Soil moisture" />
+              <InsightRow icon={ShieldCheck} label="Pest Risk" value="Low Risk" detail="Next 7 days" tone="cyan" />
+            </div>
+          </div>
         </section>
 
         <section className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-[0_12px_30px_var(--card-shadow)] sm:p-6"><div className="mb-5 flex items-center justify-between"><h2 className="flex items-center gap-2 text-xl font-bold text-[var(--text-primary)]"><BookOpen size={21} className="text-violet-400" /> Learning &amp; Resources</h2><button type="button" onClick={() => navigate('/academy')} className="text-xs font-bold text-cyan-500">View All <ArrowUpRight size={13} className="inline" /></button></div><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{COURSE_CATALOG.slice(0, 4).map((course, index) => <button key={course.id} type="button" onClick={() => navigate('/academy')} className="group overflow-hidden rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] text-start transition-all hover:-translate-y-1 hover:border-emerald-400/50"><div className={`reference-image reference-resource-${index + 1} h-28`} role="img" aria-label={course.title.en} /><div className="p-3"><p className="line-clamp-2 min-h-10 text-sm font-bold text-[var(--text-primary)]">{course.title.en}</p><div className="mt-3 flex items-center justify-between"><span className="rounded-md bg-emerald-500/15 px-2 py-1 text-[10px] font-bold text-emerald-400">{course.level}</span><ArrowRight size={16} className="text-emerald-400 transition-transform group-hover:translate-x-1" /></div></div></button>)}</div></section>
@@ -463,6 +432,20 @@ export default function DashboardPage() {
           )}
         </section>
       </div>
+    </div>
+  )
+}
+
+function InsightRow({ icon: Icon, label, value, detail, tone = 'green' }: { icon: typeof Leaf; label: string; value: string; detail: string; tone?: 'green' | 'rose' | 'cyan' }) {
+  const iconTone = tone === 'rose' ? 'text-rose-300 bg-rose-400/10' : tone === 'cyan' ? 'text-cyan-300 bg-cyan-400/10' : 'text-emerald-300 bg-emerald-400/10'
+  return (
+    <div className="flex items-center gap-3 py-3">
+      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${iconTone}`}><Icon size={17} /></span>
+      <div className="min-w-0 flex-1">
+        <p className="text-xs text-slate-400">{label}</p>
+        <p className="truncate text-sm font-bold text-white">{value}</p>
+      </div>
+      <p className="max-w-[120px] text-right text-[11px] leading-4 text-emerald-300">{detail}</p>
     </div>
   )
 }

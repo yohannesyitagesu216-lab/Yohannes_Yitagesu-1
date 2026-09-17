@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiClient } from '../lib/api'
+import { supabase } from '../lib/supabase'
 import { User, Mail, Lock, Leaf, AlertCircle, Loader, Eye, EyeOff, ArrowRight, CheckCircle2, Droplets, Play, ScanLine, ShieldAlert, Sprout, TrendingUp } from 'lucide-react'
 
 interface SignupPageProps {
@@ -17,6 +18,16 @@ export default function SignupPage({ setIsAuthenticated }: SignupPageProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
+
+  const GoogleIcon = () => (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+      <path fill="#4285F4" d="M21.6 12.23c0-.7-.06-1.37-.18-2.02H12v3.82h5.39a4.62 4.62 0 0 1-2 3.03v2.5h3.24c1.9-1.75 2.97-4.35 2.97-7.33Z" />
+      <path fill="#34A853" d="M12 22c2.7 0 4.96-.9 6.61-2.44l-3.24-2.5c-.9.6-2.06.96-3.37.96-2.59 0-4.79-1.75-5.57-4.11H.96v2.59A10 10 0 0 0 12 22Z" />
+      <path fill="#FBBC05" d="M6.43 19.91A6.05 6.05 0 0 1 6 16.8V14.2H2.74A9.98 9.98 0 0 0 2 12c0-1.62.39-3.15 1.08-4.47L6.43 10.1A6.06 6.06 0 0 1 6 12c0 1.17.28 2.27.83 3.24l-.4 4.67Z" />
+      <path fill="#EA4335" d="M12 3.98c1.47 0 2.79.5 3.83 1.49l2.87-2.87A9.92 9.92 0 0 0 12 2a10 10 0 0 0-9.04 5.53l3.68 2.85A6.04 6.04 0 0 1 12 3.98Z" />
+    </svg>
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,6 +50,26 @@ export default function SignupPage({ setIsAuthenticated }: SignupPageProps) {
       setError(err.response?.data?.message || t('errors.serverError'))
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    setError('')
+    setGoogleLoading(true)
+
+    try {
+      const redirectTo = `${window.location.origin}/auth/callback`
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo },
+      })
+
+      if (error) {
+        throw error
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Google sign-in is unavailable right now.')
+      setGoogleLoading(false)
     }
   }
 
@@ -89,6 +120,23 @@ export default function SignupPage({ setIsAuthenticated }: SignupPageProps) {
             <p className="mt-3 text-sm leading-6 text-slate-200/90">Create your account and start farming smarter.</p>
 
             {error && <div className="mt-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-3.5 text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200" role="alert"><AlertCircle className="mt-0.5 shrink-0" size={18} /><p className="text-sm">{error}</p></div>}
+
+            <div className="mt-6">
+              <div className="mb-4 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-300/80">
+                <span className="h-px flex-1 bg-[rgba(255,255,255,0.12)]" />
+                <span>or continue with</span>
+                <span className="h-px flex-1 bg-[rgba(255,255,255,0.12)]" />
+              </div>
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                disabled={googleLoading}
+                className="flex w-full items-center justify-center gap-3 rounded-xl border border-[rgba(255,255,255,0.12)] bg-white/5 px-4 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {googleLoading ? <Loader size={18} className="animate-spin" /> : <GoogleIcon />}
+                <span>{googleLoading ? 'Connecting...' : 'Continue with Google'}</span>
+              </button>
+            </div>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               <div><label htmlFor="signup-name" className="mb-2 block text-sm font-semibold text-slate-100">Full Name</label><div className="relative"><User className="pointer-events-none absolute top-1/2 -translate-y-1/2 text-slate-300" size={19} style={{ insetInlineStart: '1rem' }} /><input id="signup-name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="John Doe" className="w-full rounded-xl border border-white/12 bg-white/5 py-3.5 text-sm text-white outline-none transition placeholder:text-slate-300/80 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10" style={{ paddingInlineStart: '3rem', paddingInlineEnd: '1rem' }} required /></div></div>

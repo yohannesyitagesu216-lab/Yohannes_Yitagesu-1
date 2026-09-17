@@ -78,26 +78,26 @@ export default function CropAnalysisPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="page-frame space-y-6 pb-10 pt-6 sm:pt-8">
       {/* Hero Section */}
-      <div className="rounded-3xl bg-gradient-to-r from-cyan-500/10 to-primary-500/10 border border-cyan-500/20 p-8 md:p-12">
+      <div className="glass-panel overflow-hidden rounded-[24px] border-cyan-300/15 bg-gradient-to-br from-emerald-950/40 via-[var(--bg-card)] to-cyan-950/30 p-6 md:p-9">
         <div className="space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full bg-cyan-500/20 px-4 py-2 text-sm font-semibold text-cyan-600">
+          <div className="section-label inline-flex items-center gap-2 text-cyan-300">
             <Sparkles size={16} />
             {t('ui.aiCropDetection')}
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] md:text-4xl">
             {t('cropAnalysis.title')}
           </h1>
-          <p className="text-xl text-[var(--text-secondary)] max-w-2xl">
+          <p className="max-w-2xl text-base leading-7 text-[var(--text-secondary)] md:text-lg">
             {t('cropAnalysis.description')}
           </p>
         </div>
       </div>
 
       {/* Upload Section */}
-      <div className="bg-[var(--bg-card)] rounded-2xl shadow-lg overflow-hidden border border-[var(--border-color)]">
-        <div className="p-8">
+      <div className="glass-panel overflow-hidden rounded-[24px]">
+        <div className="p-5 sm:p-7">
           <div className="space-y-6">
             {error && (
               <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3 animate-slide-in">
@@ -111,13 +111,13 @@ export default function CropAnalysisPage() {
               onClick={() => fileInputRef.current?.click()}
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleDragDrop}
-              className="border-2 border-dashed border-[var(--border-color)] rounded-2xl p-8 md:p-16 text-center hover:border-cyan-500 hover:bg-[var(--bg-secondary)] transition-all cursor-pointer group"
+              className="group cursor-pointer rounded-[20px] border border-dashed border-emerald-300/25 bg-emerald-300/[0.03] p-8 text-center transition-all hover:border-cyan-300/60 hover:bg-cyan-300/[0.04] md:p-16"
             >
               <div className="space-y-4">
                 <div className="flex justify-center">
                   <div className="relative">
                     <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500 to-primary-500 rounded-full opacity-0 group-hover:opacity-20 blur-xl transition-all"></div>
-                    <div className="relative w-20 h-20 bg-gradient-to-br from-cyan-500/20 to-primary-500/20 rounded-full flex items-center justify-center border border-cyan-500/30">
+                    <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl border border-cyan-300/25 bg-cyan-300/[0.08]">
                       <Upload className="text-cyan-600 group-hover:text-cyan-500 transition-colors" size={40} />
                     </div>
                   </div>

@@ -21,17 +21,17 @@
 
 html[data-theme='dark'] {
   color-scheme: dark;
-  --bg-primary: #061426;
-  --bg-secondary: #081b2e;
-  --bg-card: #0b2943;
-  --bg-footer: #04101f;
-  --text-primary: #f2fbff;
-  --text-secondary: #a6c0ce;
-  --text-muted: #718da0;
-  --border-color: rgba(255, 255, 255, 0.09);
-  --primary: #00d084;
+  --bg-primary: #061510;
+  --bg-secondary: #0a2119;
+  --bg-card: #0d2b20;
+  --bg-footer: #04100b;
+  --text-primary: #f1faf5;
+  --text-secondary: #a7beb1;
+  --text-muted: #718b7c;
+  --border-color: rgba(177, 236, 203, 0.12);
+  --primary: #34d399;
   --primary-strong: #10b981;
-  --accent-cyan: #38bdf8;
+  --accent-cyan: #2dd4bf;
   --accent-purple: #a78bfa;
   --accent-amber: #fbbf24;
   --card-shadow: rgba(0, 0, 0, 0.28);
@@ -84,7 +84,7 @@ body::before {
   pointer-events: none;
   content: '';
   background-image: radial-gradient(circle at 85% 8%, rgba(16, 185, 129, 0.08), transparent 28rem),
-    linear-gradient(135deg, transparent 0 60%, rgba(14, 165, 233, 0.035));
+    linear-gradient(135deg, transparent 0 60%, rgba(20, 184, 166, 0.035));
 }
 
 #root {
@@ -392,6 +392,13 @@ a {
   margin-left: 0;
 }
 
+.app-main.landing-surface {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  padding-top: 0;
+}
+
 .app-shell:has(.login-page) > .app-footer {
   display: block;
   margin-top: 0;
@@ -413,6 +420,26 @@ a {
   border: 1px solid var(--border-color);
   background: linear-gradient(145deg, color-mix(in srgb, var(--bg-card) 94%, white), var(--bg-card));
   box-shadow: 0 18px 50px var(--card-shadow);
+}
+
+.auth-app-surface {
+  background-image: linear-gradient(180deg, rgba(16, 185, 129, 0.025), transparent 18rem),
+    radial-gradient(circle at 90% 0%, rgba(45, 212, 191, 0.06), transparent 25rem);
+}
+
+.glass-panel {
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--bg-card) 82%, transparent);
+  box-shadow: 0 20px 55px var(--card-shadow);
+  backdrop-filter: blur(18px);
+}
+
+.section-label {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .reference-image {
@@ -439,6 +466,18 @@ a {
 
 .app-footer {
   margin-top: 5rem;
+}
+
+.landing-footer {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.landing-footer .app-footer {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
 }
 
 @media (min-width: 1024px) {

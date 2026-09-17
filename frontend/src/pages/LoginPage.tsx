@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiClient } from '../lib/api'
-import i18n from '../i18n/config'
-import { AlertCircle, ArrowRight, CheckCircle2, Droplets, Eye, EyeOff, Leaf, Loader, Lock, Mail, Moon, Play, ScanLine, ShieldAlert, Sprout, Sun, TrendingUp } from 'lucide-react'
+import { supabase } from '../lib/supabase'
+import { AlertCircle, ArrowRight, CheckCircle2, Droplets, Eye, EyeOff, Leaf, Loader, Lock, Mail, Play, ScanLine, ShieldAlert, Sprout, TrendingUp } from 'lucide-react'
 
 interface LoginPageProps {
   setIsAuthenticated: (value: boolean) => void
@@ -16,24 +16,17 @@ export default function LoginPage({ setIsAuthenticated }: LoginPageProps) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => (
-    document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
-  ))
-
-  const changeLanguage = (language: string) => {
-    void i18n.changeLanguage(language)
-    localStorage.setItem('agro_lang', language)
-  }
-
-  const toggleTheme = () => {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark'
-    setTheme(nextTheme)
-    document.documentElement.setAttribute('data-theme', nextTheme)
-    document.body.setAttribute('data-theme', nextTheme)
-    localStorage.setItem('agrovision-theme', nextTheme)
-  }
+  const GoogleIcon = () => (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+      <path fill="#4285F4" d="M21.6 12.23c0-.7-.06-1.37-.18-2.02H12v3.82h5.39a4.62 4.62 0 0 1-2 3.03v2.5h3.24c1.9-1.75 2.97-4.35 2.97-7.33Z" />
+      <path fill="#34A853" d="M12 22c2.7 0 4.96-.9 6.61-2.44l-3.24-2.5c-.9.6-2.06.96-3.37.96-2.59 0-4.79-1.75-5.57-4.11H.96v2.59A10 10 0 0 0 12 22Z" />
+      <path fill="#FBBC05" d="M6.43 19.91A6.05 6.05 0 0 1 6 16.8V14.2H2.74A9.98 9.98 0 0 0 2 12c0-1.62.39-3.15 1.08-4.47L6.43 10.1A6.06 6.06 0 0 1 6 12c0 1.17.28 2.27.83 3.24l-.4 4.67Z" />
+      <path fill="#EA4335" d="M12 3.98c1.47 0 2.79.5 3.83 1.49l2.87-2.87A9.92 9.92 0 0 0 12 2a10 10 0 0 0-9.04 5.53l3.68 2.85A6.04 6.04 0 0 1 12 3.98Z" />
+    </svg>
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,6 +44,26 @@ export default function LoginPage({ setIsAuthenticated }: LoginPageProps) {
       setError(err.response?.data?.message || t('errors.serverError'))
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    setError('')
+    setGoogleLoading(true)
+
+    try {
+      const redirectTo = `${window.location.origin}/auth/callback`
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo },
+      })
+
+      if (error) {
+        throw error
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Google sign-in is unavailable right now.')
+      setGoogleLoading(false)
     }
   }
 
@@ -111,22 +124,22 @@ export default function LoginPage({ setIsAuthenticated }: LoginPageProps) {
   )
 
   return (
-    <div className="login-page relative w-full min-h-screen overflow-hidden bg-[#061d1d] text-[var(--text-primary)]">
-      <img src="/front.png" alt="Farmer in a field using an AI agriculture app" className="absolute inset-0 h-full w-full object-contain object-center" style={{ width: '100vw', height: '100vh', minHeight: '100vh', objectFit: 'contain', objectPosition: 'center' }} />
+    <div className="login-page relative w-full min-h-screen overflow-hidden bg-[#061d1d] text-[var(--text-primary)] lg:h-[100dvh] lg:min-h-0">
+      <img src="/front.png" alt="Farmer in a field using an AI agriculture app" className="absolute inset-0 h-full w-full object-cover object-center" style={{ width: '100vw', height: '100dvh', minHeight: 0, objectFit: 'cover', objectPosition: 'center' }} />
       <div className="absolute inset-0 bg-black/30" />
 
-      <div className="relative z-10 min-h-screen w-full lg:grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-stretch">
-        <section className="relative order-2 min-h-[380px] overflow-visible bg-transparent sm:min-h-[440px] lg:order-1 lg:block lg:min-h-screen">{renderVisualPanel(true)}</section>
-        <section className="login-section relative order-1 flex min-h-screen w-full flex-col justify-center bg-transparent px-4 py-5 sm:px-6 lg:order-2 lg:px-8 xl:px-12">
-          <div className="login-card animate-[slideUp_0.8s_ease-out] mx-auto w-full max-w-[470px] rounded-[18px] border border-[rgba(40,220,170,0.25)] bg-[rgba(3,22,34,0.78)] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.26)] backdrop-blur-[20px] sm:p-7 lg:p-6">
-            <div className="mb-6 flex items-center gap-3 sm:mb-7 lg:mb-5">
+      <div className="relative z-10 min-h-screen w-full lg:grid lg:h-[100dvh] lg:min-h-0 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-stretch">
+        <section className="relative order-2 min-h-[380px] overflow-visible bg-transparent sm:min-h-[440px] lg:order-1 lg:block lg:min-h-0">{renderVisualPanel(true)}</section>
+        <section className="login-section relative order-1 flex min-h-screen w-full flex-col justify-center bg-transparent px-4 py-5 sm:px-6 lg:order-2 lg:min-h-0 lg:px-8 lg:py-3 xl:px-12">
+          <div className="login-card animate-[slideUp_0.8s_ease-out] mx-auto w-full max-w-[470px] rounded-[18px] border border-[rgba(40,220,170,0.25)] bg-[rgba(3,22,34,0.78)] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.26)] backdrop-blur-[20px] sm:p-7 lg:p-4">
+            <div className="mb-6 flex items-center gap-3 sm:mb-7 lg:mb-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-400 text-[#07352b] shadow-[0_10px_24px_rgba(16,185,129,0.25)]"><Leaf size={21} /></span>
               <div><p className="font-bold text-white">AgroVision <span className="text-emerald-500">AI</span></p><p className="text-[10px] uppercase tracking-[0.16em] text-emerald-100/80">{t('common.tagline')}</p></div>
             </div>
 
             <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-emerald-500">{t('auth.login')}</p>
-            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">{t('dashboard.welcome')}!</h1>
-            <p id="login-description" className="mt-3 text-sm leading-6 text-slate-200/90 lg:mt-2">AI-powered crop disease detection, farm intelligence, education, and multilingual support in one platform.</p>
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-3xl">{t('dashboard.welcome')}!</h1>
+            <p id="login-description" className="mt-3 text-sm leading-6 text-slate-200/90 lg:mt-1">AI-powered crop disease detection, farm intelligence, education, and multilingual support in one platform.</p>
 
             {error && (
               <div className="mt-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-3.5 text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200" role="alert">
@@ -134,12 +147,29 @@ export default function LoginPage({ setIsAuthenticated }: LoginPageProps) {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} aria-describedby="login-description" className="mt-6 space-y-4 sm:space-y-5 lg:mt-4 lg:space-y-4">
+            <div className="mt-6 lg:mt-4">
+              <div className="mb-4 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-300/80 lg:mb-3">
+                <span className="h-px flex-1 bg-[rgba(255,255,255,0.12)]" />
+                <span>or continue with</span>
+                <span className="h-px flex-1 bg-[rgba(255,255,255,0.12)]" />
+              </div>
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                disabled={googleLoading}
+                className="flex w-full items-center justify-center gap-3 rounded-xl border border-[rgba(255,255,255,0.12)] bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60 lg:py-1.5"
+              >
+                {googleLoading ? <Loader size={18} className="animate-spin" /> : <GoogleIcon />}
+                <span>{googleLoading ? 'Connecting...' : 'Continue with Google'}</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} aria-describedby="login-description" className="mt-6 space-y-4 sm:space-y-5 lg:mt-3 lg:space-y-3">
               <div>
                 <label htmlFor="login-email" className="mb-2 block text-sm font-semibold text-slate-100">{t('auth.email')}</label>
                 <div className="relative">
                   <Mail className="pointer-events-none absolute top-1/2 -translate-y-1/2 text-slate-300" size={19} style={{ insetInlineStart: '1rem' }} />
-                  <input id="login-email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder={t('ui.placeholderEmail')} className="w-full rounded-xl border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.05)] py-3.5 text-sm text-white outline-none transition placeholder:text-slate-300/80 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10" style={{ paddingInlineStart: '3rem', paddingInlineEnd: '1rem' }} required />
+                  <input id="login-email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder={t('ui.placeholderEmail')} className="w-full rounded-xl border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.05)] py-3.5 text-sm text-white outline-none transition placeholder:text-slate-300/80 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 lg:py-2.5" style={{ paddingInlineStart: '3rem', paddingInlineEnd: '1rem' }} required />
                 </div>
               </div>
 
@@ -147,7 +177,7 @@ export default function LoginPage({ setIsAuthenticated }: LoginPageProps) {
                 <label htmlFor="login-password" className="mb-2 block text-sm font-semibold text-slate-100">{t('auth.password')}</label>
                 <div className="relative">
                   <Lock className="pointer-events-none absolute top-1/2 -translate-y-1/2 text-slate-300" size={19} style={{ insetInlineStart: '1rem' }} />
-                  <input id="login-password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" className="w-full rounded-xl border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.05)] py-3.5 text-sm text-white outline-none transition placeholder:text-slate-300/80 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10" style={{ paddingInlineStart: '3rem', paddingInlineEnd: '3rem' }} required />
+                  <input id="login-password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" className="w-full rounded-xl border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.05)] py-3.5 text-sm text-white outline-none transition placeholder:text-slate-300/80 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 lg:py-2.5" style={{ paddingInlineStart: '3rem', paddingInlineEnd: '3rem' }} required />
                   <button type="button" onClick={() => setShowPassword((visible) => !visible)} className="absolute top-1/2 -translate-y-1/2 text-slate-300 hover:text-emerald-400" style={{ insetInlineEnd: '1rem' }} aria-label={showPassword ? 'Hide password' : 'Show password'} aria-pressed={showPassword}>
                     {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
                   </button>
@@ -162,21 +192,14 @@ export default function LoginPage({ setIsAuthenticated }: LoginPageProps) {
                 <Link to="/forgot-password" className="font-semibold text-emerald-400 hover:text-emerald-300">Forgot your password?</Link>
               </div>
 
-              <button type="submit" disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition duration-300 hover:-translate-y-0.5 hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-60">
+              <button type="submit" disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition duration-300 hover:-translate-y-0.5 hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-60 lg:py-2.5">
                 {loading ? <><Loader size={19} className="animate-spin" />{t('common.loading')}</> : t('auth.loginButton')}
               </button>
             </form>
 
-            <div className="my-6 flex items-center gap-3 text-xs text-slate-300 lg:my-4"><span className="h-px flex-1 bg-[rgba(255,255,255,0.12)]" /><span>Don't have an account?</span><span className="h-px flex-1 bg-[rgba(255,255,255,0.12)]" /></div>
-            <Link to="/signup" className="flex w-full items-center justify-center rounded-xl border border-emerald-400/60 bg-[rgba(16,185,129,0.08)] px-5 py-3 text-sm font-bold text-emerald-400 transition duration-300 hover:-translate-y-0.5 hover:bg-[rgba(16,185,129,0.14)]">Create Account</Link>
+            <div className="my-6 flex items-center gap-3 text-xs text-slate-300 lg:my-3"><span className="h-px flex-1 bg-[rgba(255,255,255,0.12)]" /><span>Don't have an account?</span><span className="h-px flex-1 bg-[rgba(255,255,255,0.12)]" /></div>
+            <Link to="/signup" className="flex w-full items-center justify-center rounded-xl border border-emerald-400/60 bg-[rgba(16,185,129,0.08)] px-5 py-3 text-sm font-bold text-emerald-400 transition duration-300 hover:-translate-y-0.5 hover:bg-[rgba(16,185,129,0.14)] lg:py-2.5">Create Account</Link>
 
-            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[rgba(255,255,255,0.12)] pt-5 text-xs text-slate-200 lg:mt-4 lg:pt-4">
-              <label htmlFor="login-language" className="sr-only">Language</label>
-              <div className="flex items-center gap-2"><span aria-hidden="true">🌐</span><select id="login-language" value={i18n.language} onChange={(event) => changeLanguage(event.target.value)} className="bg-transparent font-semibold text-slate-100 outline-none" aria-label="Language">
-                <option value="en">English</option><option value="ar">العربية</option><option value="am">አማርኛ</option><option value="om">Afaan Oromo</option><option value="fr">Français</option><option value="es">Español</option>
-              </select></div>
-              <button type="button" onClick={toggleTheme} className="flex items-center gap-2 rounded-lg px-2 py-1.5 font-semibold text-slate-200 transition hover:bg-[rgba(255,255,255,0.05)]" aria-label={t('ui.toggleTheme')} title={theme === 'dark' ? t('ui.lightMode') : t('ui.darkMode')}><span aria-hidden="true">{theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}</span>{theme === 'dark' ? t('ui.lightMode') : t('ui.darkMode')}</button>
-            </div>
           </div>
         </section>
       </div>

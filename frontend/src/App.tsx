@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18n from './i18n/config'
@@ -15,9 +15,11 @@ import CropAnalysisPage from './pages/CropAnalysisPage'
 import AcademyPage from './pages/AcademyPage'
 import ToolsPage from './pages/ToolsPage'
 import AIPage from './pages/AIPage'
+import AuthCallbackPage from './pages/AuthCallbackPage'
 
-function App() {
+function AppContent() {
   const { t } = useTranslation()
+  const location = useLocation()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
@@ -72,13 +74,16 @@ function App() {
     })
   }
 
+  const showNavbar = isAuthenticated
+  const showFooter = location.pathname !== '/auth/callback' && location.pathname !== '/login' && location.pathname !== '/signup'
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[var(--bg-primary)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--bg-primary)]">
         <div className="text-center">
           <div className="animate-pulse">
-            <div className="h-12 w-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full mx-auto mb-4"></div>
-            <p className="text-[var(--text-secondary)] font-medium">{t('ui.loadingApp')}</p>
+            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-gradient-to-br from-primary-500 to-primary-600"></div>
+            <p className="font-medium text-[var(--text-secondary)]">{t('ui.loadingApp')}</p>
           </div>
         </div>
       </div>
@@ -86,28 +91,35 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="app-shell flex min-h-screen flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
-        {isAuthenticated && <Navbar setIsAuthenticated={setIsAuthenticated} theme={theme} onToggleTheme={toggleTheme} />}
-        <main className="app-main flex-1 bg-[var(--bg-primary)]">
-          <Routes>
-            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage setIsAuthenticated={setIsAuthenticated} />} />
-            <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage setIsAuthenticated={setIsAuthenticated} />} />
-            <Route path="/signup" element={isAuthenticated ? <Navigate to="/dashboard" /> : <SignupPage setIsAuthenticated={setIsAuthenticated} />} />
-            <Route path="/forgot-password" element={isAuthenticated ? <Navigate to="/dashboard" /> : <ForgotPasswordPage />} />
-            <Route path="/reset-password" element={isAuthenticated ? <Navigate to="/dashboard" /> : <ResetPasswordPage />} />
-            
-            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-            <Route path="/crop-analysis" element={<ProtectedRoute><CropAnalysisPage /></ProtectedRoute>} />
-            <Route path="/academy" element={<ProtectedRoute><AcademyPage /></ProtectedRoute>} />
-            <Route path="/tools" element={<ProtectedRoute><ToolsPage /></ProtectedRoute>} />
-            <Route path="/ai-chat" element={<ProtectedRoute><AIPage /></ProtectedRoute>} />
+    <div className="app-shell flex min-h-screen flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
+      {showNavbar && <Navbar setIsAuthenticated={setIsAuthenticated} theme={theme} onToggleTheme={toggleTheme} />}
+      <main className={`app-main flex-1 bg-[var(--bg-primary)] ${location.pathname === '/' ? 'landing-surface' : ''} ${showNavbar ? 'auth-app-surface' : ''}`}>
+        <Routes>
+          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/signup" element={isAuthenticated ? <Navigate to="/dashboard" /> : <SignupPage setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/auth/callback" element={<AuthCallbackPage setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/forgot-password" element={isAuthenticated ? <Navigate to="/dashboard" /> : <ForgotPasswordPage />} />
+          <Route path="/reset-password" element={isAuthenticated ? <Navigate to="/dashboard" /> : <ResetPasswordPage />} />
 
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+          <Route path="/crop-analysis" element={<ProtectedRoute><CropAnalysisPage /></ProtectedRoute>} />
+          <Route path="/academy" element={<ProtectedRoute><AcademyPage /></ProtectedRoute>} />
+          <Route path="/tools" element={<ProtectedRoute><ToolsPage /></ProtectedRoute>} />
+          <Route path="/ai-chat" element={<ProtectedRoute><AIPage /></ProtectedRoute>} />
+
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </main>
+      {showFooter && (location.pathname === '/' ? <div className="landing-footer"><Footer /></div> : <Footer />)}
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   )
 }

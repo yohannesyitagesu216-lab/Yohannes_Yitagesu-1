@@ -7,6 +7,7 @@ import om from './locales/om.json'
 import fr from './locales/fr.json'
 import ar from './locales/ar.json'
 import es from './locales/es.json'
+import ti from './locales/ti.json'
 
 const withLandingPremium = (locale: Record<string, any>) => ({
   ...locale,
@@ -27,9 +28,10 @@ i18n
       fr: { translation: withLandingPremium(fr) },
       ar: { translation: withLandingPremium(ar) },
       es: { translation: withLandingPremium(es) },
+      ti: { translation: withLandingPremium(ti) },
     },
     fallbackLng: 'en',
-    supportedLngs: ['en', 'am', 'om', 'fr', 'ar', 'es'],
+    supportedLngs: ['en', 'am', 'om', 'fr', 'ar', 'es', 'ti'],
     detection: {
       order: ['localStorage', 'htmlTag', 'navigator'],
       lookupLocalStorage: 'agro_lang',

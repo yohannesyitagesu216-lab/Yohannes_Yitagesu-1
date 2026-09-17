@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, BookOpen, BrainCircuit, CheckCircle2, ChevronDown, Droplets, Leaf, Menu, ScanLine, Sprout, ThermometerSun, X } from 'lucide-react'
 
 interface LandingPageProps { setIsAuthenticated: (value: boolean) => void }
-const languages = [['en', 'EN'], ['am', 'አማ'], ['om', 'OM'], ['fr', 'FR'], ['ar', 'عربي'], ['es', 'ES']]
+const languages = [['en', 'EN'], ['am', 'አማ'], ['om', 'OM'], ['fr', 'FR'], ['ar', 'عربي'], ['es', 'ES'], ['ti', 'ትግርኛ']]
 
 export default function LandingPage(_props: LandingPageProps) {
   const { t, i18n } = useTranslation()

@@ -1,8 +1,9 @@
 import type { AcademyLanguage, Localized } from './academyContent'
 
-export const ACADEMY_LANGUAGES: Array<{ code: AcademyLanguage; label: string }> = [
+export const ACADEMY_LANGUAGES: Array<{ code: AcademyLanguage | 'ti'; label: string }> = [
   { code: 'en', label: 'English' }, { code: 'am', label: 'አማርኛ' }, { code: 'om', label: 'Afaan Oromo' },
   { code: 'fr', label: 'Français' }, { code: 'ar', label: 'العربية' }, { code: 'es', label: 'Español' },
+  { code: 'ti', label: 'ትግርኛ' },
 ]
 
 export interface AcademyCourseCatalog {
@@ -18,7 +19,7 @@ export interface AcademyCourseCatalog {
   units: Array<{ lessons: unknown[] }>
 }
 
-const languages: AcademyLanguage[] = ACADEMY_LANGUAGES.map((language) => language.code)
+const languages = ACADEMY_LANGUAGES.map((language) => language.code)
 const localized = (english: string): Localized<string> => Object.fromEntries(languages.map((language) => [language, english])) as Localized<string>
 
 const entries: Array<[string, string, string, string, 'Beginner' | 'Intermediate' | 'Advanced', string, string, string]> = [

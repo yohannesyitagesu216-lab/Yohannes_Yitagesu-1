@@ -32,7 +32,7 @@ export default function Navbar({ setIsAuthenticated, theme, onToggleTheme }: Nav
   }
 
   const handleLanguageChange = (lang: string) => {
-    const normalizedLang = ['en', 'am', 'om', 'fr', 'ar', 'es'].includes(lang) ? lang : 'en'
+    const normalizedLang = ['en', 'am', 'om', 'fr', 'ar', 'es', 'ti'].includes(lang) ? lang : 'en'
     void i18n.changeLanguage(normalizedLang)
     localStorage.setItem('agro_lang', normalizedLang)
   }
@@ -63,7 +63,7 @@ export default function Navbar({ setIsAuthenticated, theme, onToggleTheme }: Nav
 
   return (
     <>
-      <aside className="fixed inset-y-0 left-0 z-50 hidden w-[244px] flex-col border-r border-white/10 bg-[#061426] px-4 py-5 lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-50 hidden w-[244px] flex-col border-r border-emerald-100/10 bg-[#061510]/95 px-4 py-5 backdrop-blur-xl lg:flex">
         <Link to="/dashboard" className="mb-10 flex items-center gap-3 px-3" aria-label="AgroVision dashboard">
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 text-white shadow-[0_10px_24px_rgba(16,185,129,0.3)]">
             <Leaf size={23} />
@@ -71,7 +71,7 @@ export default function Navbar({ setIsAuthenticated, theme, onToggleTheme }: Nav
           <span className="text-lg font-extrabold tracking-tight text-white">AgroVision <span className="text-emerald-400">AI</span></span>
         </Link>
 
-        <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">Workspace</p>
+        <p className="section-label mb-3 px-3">Workspace</p>
         <nav className="space-y-1">{renderNavigation()}</nav>
 
         <div className="mt-auto space-y-1">
@@ -83,14 +83,14 @@ export default function Navbar({ setIsAuthenticated, theme, onToggleTheme }: Nav
             <LogOut size={18} strokeWidth={1.8} />
             <span>{t('common.logout')}</span>
           </button>
-          <div className="mt-4 rounded-2xl border border-emerald-400/15 bg-gradient-to-br from-emerald-400/15 to-cyan-400/5 p-4">
+          <div className="mt-4 rounded-2xl border border-emerald-400/15 bg-emerald-400/[0.07] p-4">
             <p className="text-xs font-semibold text-emerald-300">{t('ui.smartAgriculture')}</p>
             <p className="mt-2 text-xs leading-5 text-slate-400">Field intelligence for stronger harvests.</p>
           </div>
         </div>
       </aside>
 
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-[var(--border-color)] bg-[color-mix(in_srgb,var(--bg-primary)_86%,transparent)] backdrop-blur-xl lg:left-[244px]">
+      <header className="fixed inset-x-0 top-0 z-40 border-b border-[var(--border-color)] bg-[color-mix(in_srgb,var(--bg-primary)_88%,transparent)] backdrop-blur-xl lg:left-[244px]">
         <div className="flex h-[76px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <Link to="/dashboard" className="flex items-center gap-2 lg:hidden">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 text-white"><Leaf size={20} /></span>
@@ -110,8 +110,8 @@ export default function Navbar({ setIsAuthenticated, theme, onToggleTheme }: Nav
             <button type="button" aria-label={t('ui.toggleTheme')} title={theme === 'dark' ? t('ui.lightMode') : t('ui.darkMode')} onClick={onToggleTheme} className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] transition-colors hover:text-[var(--primary)]">
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-            <select aria-label="Language" value={['en', 'am', 'om', 'fr', 'ar', 'es'].includes(i18n.language) ? i18n.language : 'en'} onChange={(e) => handleLanguageChange(e.target.value)} className="hidden h-10 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] px-2 text-sm font-semibold text-[var(--text-primary)] outline-none sm:block">
-              <option value="en">EN</option><option value="am">አማ</option><option value="om">OM</option><option value="fr">FR</option><option value="ar">عربي</option><option value="es">ES</option>
+            <select aria-label="Language" value={['en', 'am', 'om', 'fr', 'ar', 'es', 'ti'].includes(i18n.language) ? i18n.language : 'en'} onChange={(e) => handleLanguageChange(e.target.value)} className="hidden h-10 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] px-2 text-sm font-semibold text-[var(--text-primary)] outline-none sm:block">
+              <option value="en">EN</option><option value="am">አማ</option><option value="om">OM</option><option value="fr">FR</option><option value="ar">عربي</option><option value="es">ES</option><option value="ti">ትግርኛ</option>
             </select>
             <div className="hidden items-center gap-2 sm:flex">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 text-sm font-extrabold text-white">{userName.charAt(0).toUpperCase() || 'A'}</span>
@@ -124,7 +124,7 @@ export default function Navbar({ setIsAuthenticated, theme, onToggleTheme }: Nav
           </div>
         </div>
 
-        {isMenuOpen && <div className="border-t border-[var(--border-color)] bg-[var(--bg-primary)] p-4 lg:hidden animate-slide-in"><div className="mb-3 flex items-center justify-between"><span className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--text-muted)]">Language</span><select aria-label="Mobile language" value={['en', 'am', 'om', 'fr', 'ar', 'es'].includes(i18n.language) ? i18n.language : 'en'} onChange={(e) => handleLanguageChange(e.target.value)} className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] px-2 py-1.5 text-sm font-semibold text-[var(--text-primary)] outline-none"><option value="en">English</option><option value="am">አማርኛ</option><option value="om">Afaan Oromo</option><option value="fr">Français</option><option value="ar">العربية</option><option value="es">Español</option></select></div><nav className="space-y-1">{renderNavigation(true)}</nav><button type="button" onClick={handleLogout} className="mt-3 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--text-secondary)] hover:bg-[var(--bg-card)]"><LogOut size={18} />{t('common.logout')}</button></div>}
+        {isMenuOpen && <div className="border-t border-[var(--border-color)] bg-[var(--bg-primary)] p-4 lg:hidden animate-slide-in"><div className="mb-3 flex items-center justify-between"><span className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--text-muted)]">Language</span><select aria-label="Mobile language" value={['en', 'am', 'om', 'fr', 'ar', 'es', 'ti'].includes(i18n.language) ? i18n.language : 'en'} onChange={(e) => handleLanguageChange(e.target.value)} className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] px-2 py-1.5 text-sm font-semibold text-[var(--text-primary)] outline-none"><option value="en">English</option><option value="am">አማርኛ</option><option value="om">Afaan Oromo</option><option value="fr">Français</option><option value="ar">العربية</option><option value="es">Español</option><option value="ti">ትግርኛ</option></select></div><nav className="space-y-1">{renderNavigation(true)}</nav><button type="button" onClick={handleLogout} className="mt-3 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--text-secondary)] hover:bg-[var(--bg-card)]"><LogOut size={18} />{t('common.logout')}</button></div>}
       </header>
     </>
   )
