@@ -75,7 +75,8 @@ function AppContent() {
   }
 
   const showNavbar = isAuthenticated
-  const showFooter = location.pathname !== '/auth/callback' && location.pathname !== '/login' && location.pathname !== '/signup'
+  const isLandingRoute = location.pathname === '/'
+  const showFooter = isAuthenticated || isLandingRoute
 
   if (loading) {
     return (
@@ -111,7 +112,7 @@ function AppContent() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
-      {showFooter && (location.pathname === '/' ? <div className="landing-footer"><Footer /></div> : <Footer />)}
+      {showFooter && (isLandingRoute ? <div className="landing-footer"><Footer /></div> : <Footer />)}
     </div>
   )
 }
