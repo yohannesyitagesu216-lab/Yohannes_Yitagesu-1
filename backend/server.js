@@ -305,7 +305,7 @@ app.use(cors({
   origin: ALLOWED_ORIGINS,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma", "X-Request-Id"],
 }));
 
 app.use(express.json({ limit: "256kb" }));
@@ -813,10 +813,11 @@ app.post("/api/crop/analyze", authMiddleware, rateLimit({ windowMs: 60 * 1000, m
   }
 });
 
-app.post("/api/predictions", authMiddleware, upload.single("image"), async (req, res) => {
+app.post("/api/predictions", authMiddleware, rateLimit({ windowMs: 60 * 1000, max: 10, message: "Too many crop analysis requests. Please try again shortly." }), upload.single("image"), async (req, res) => {
   const validationError = validateImageFile(req.file);
   if (validationError) return res.status(400).json({ success: false, message: validationError });
 
+  res.setHeader("Cache-Control", "no-store");
   try {
     const formData = new FormData();
     formData.append("file", new Blob([req.file.buffer], { type: req.file.mimetype }), req.file.originalname);

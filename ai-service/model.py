@@ -1,10 +1,9 @@
 import io
-import json
 import os
 from typing import List, Tuple
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 
 MODEL = None
 CLASSES: List[str] = []
@@ -106,21 +105,26 @@ def predict_image(image_bytes: bytes):
             return {"success": False, "error": "AI model is not trained yet"}
 
     try:
-        import tensorflow as tf
-    except Exception as exc:
-        return {"success": False, "error": f"TensorFlow is not available: {exc}"}
+        with Image.open(io.BytesIO(image_bytes)) as source:
+            image = ImageOps.exif_transpose(source).convert("RGB")
+            image.load()
 
-    try:
-        image = Image.open(io.BytesIO(image_bytes)).convert("RGB").resize((224, 224))
+        input_height, input_width = MODEL.input_shape[1:3]
+        if not input_height or not input_width:
+            return {"success": False, "error": "AI model input dimensions are invalid."}
+        image = image.resize((int(input_width), int(input_height)), Image.Resampling.BILINEAR)
     except Exception:
         return {"success": False, "error": "Invalid image file. Please upload a readable JPG, PNG, or WEBP image."}
 
     if not CLASSES:
         return {"success": False, "error": "AI model is not trained yet"}
 
+    # Training feeds RGB pixels in the [0, 255] range to this model; its
+    # serialized Rescaling(1/255) layer performs normalization internally.
+    # Keep inference preprocessing identical instead of applying MobileNetV2's
+    # standalone [-1, 1] preprocess_input a second time.
     image_array = np.asarray(image, dtype=np.float32)
-    image_batch = np.expand_dims(image_array, axis=0)
-    image_batch = tf.keras.applications.mobilenet_v2.preprocess_input(image_batch)
+    image_batch = np.expand_dims(image_array, axis=0).copy()
 
     probabilities = MODEL.predict(image_batch, verbose=0)[0]
     index = int(np.argmax(probabilities))

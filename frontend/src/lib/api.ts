@@ -77,7 +77,9 @@ class ApiClient {
     formData.append('image', file)
     const response = await this.client.post<PredictionResponse>('/predictions', formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Cache-Control': 'no-cache, no-store',
+        Pragma: 'no-cache',
+        'X-Request-Id': crypto.randomUUID(),
       },
     })
     return response.data
